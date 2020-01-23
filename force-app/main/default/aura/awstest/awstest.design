@@ -1,0 +1,18 @@
+<design:component>
+
+  <design:attribute
+    name="bucketName"
+    label="AWS Bucket Name"
+    description="AWS Bucket Name"
+  />
+  <design:attribute
+    name="bucketRegion"
+    label="AWS Bucket Region"
+    description="AWS Bucket Region"
+  />
+  <design:attribute
+    name="identityPoolId"
+    label="AWS Identity Pool"
+    description="AWS Identity Pool Id"
+  />
+</design:component>
