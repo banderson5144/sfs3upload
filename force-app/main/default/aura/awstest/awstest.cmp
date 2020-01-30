@@ -2,11 +2,31 @@
   implements="force:appHostable,flexipage:availableForAllPageTypes"
   access="global"
 >
-
-<aura:attribute name="progress" type="Integer" default="0"/>
-<aura:attribute name="bucketName" type="String" access="global" description="AWS Bucket Name"/>
-<aura:attribute name="bucketRegion" type="String" access="global" description="AWS Bucket Region"/>
-<aura:attribute name="identityPoolId" type="String" access="global" description="AWS Identity Pool Id"/>
+  <aura:attribute name="progress" type="Integer" default="0" />
+  <aura:attribute
+    name="bucketName"
+    type="String"
+    access="global"
+    description="AWS Bucket Name"
+  />
+  <aura:attribute
+    name="bucketRegion"
+    type="String"
+    access="global"
+    description="AWS Bucket Region"
+  />
+  <aura:attribute
+    name="identityPoolId"
+    type="String"
+    access="global"
+    description="AWS Identity Pool Id"
+  />
+  <aura:attribute
+    name="s3FileUrls"
+    type="List"
+    access="global"
+    description="Url of file(s) uploaded"
+  />
 
   <ltng:require
     scripts="{!$Resource.awssdk}"
@@ -17,19 +37,21 @@
     aura:id="fileSel"
     name="file2"
     type="file"
-    label="Attachment(version required)"
-    required="true"
-    onchange="{!c.handleFilesChange}"
+    multiple="true"
+    label="Attachment"
+    onchange="{!c.handleClick}"
   />
 
-  <lightning:button
+  <!-- <lightning:button
     variant="brand"
     label="Upload file"
     title="Upload file"
     onclick="{! c.handleClick }"
+  /> -->
+
+  <lightning:progressBar
+    value="{!v.progress}"
+    size="large"
+    variant="circular"
   />
-
-  Progress:
-  <br/><lightning:progressBar value="{!v.progress}" size="large" />
-
 </aura:component>

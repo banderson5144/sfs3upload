@@ -26,33 +26,58 @@
     handleClick: function (cmp, evt, help) 
     {
         var fileSel = cmp.find('fileSel');
+        var promises = [];
+        var fileSizeTotal = 0;
+        var loaded = [];
         // debugger;
 
-        var file = fileSel.get('v.files')[0];
-        var fileName = file.name;
+        var files = fileSel.get('v.files');
 
-        // Use S3 ManagedUpload class as it supports multipart uploads
-        var upload = new AWS.S3.ManagedUpload({
-            params: {
-                Bucket: 'bandy-bucket',
-                Key: fileName,
-                Body: file
-            }
-        });
+        for(var i = 0; i < files.length; i++)
+        {
+            fileSizeTotal += files[i].size;
+            loaded[files[i].name] = 0;
+        }        
 
-        upload.on('httpUploadProgress', function (evt) {
-            console.log('%s: %d', fileName, evt.loaded * 100 / evt.total);
-            cmp.set('v.progress',evt.loaded * 100 / evt.total);
-        });
+        for(var i = 0; i < files.length; i++)
+        {
+            var fileName = files[i].name;
 
-        var promise = upload.promise();
+            // Use S3 ManagedUpload class as it supports multipart uploads
+            var upload = new AWS.S3.ManagedUpload({
+                params: {
+                    Bucket: 'bandy-bucket',
+                    Key: fileName,
+                    Body: files[i]
+                }
+            });
 
-        promise.then(
-            function (data) {
+            upload.on('httpUploadProgress', function (evt)
+            {
+                loaded[evt.key] = evt.loaded * 100;
+
+                var loadedTotal = 0;
+
+                for (var j in loaded)
+                {
+                    loadedTotal += loaded[j];
+                }
+
+                console.log('%s: %d', evt.key, loadedTotal / fileSizeTotal);
+                cmp.set('v.progress',loadedTotal / fileSizeTotal);
+            });
+
+            promises.push(upload.promise());
+        }
+
+        Promise.all(promises).then(function (data)
+            {
                 debugger;
-                alert("Successfully uploaded file.");
+                cmp.set('v.s3FileUrls',data.map(function(r){return r.Location;}));
+                alert("Successfully uploaded file(s).");
             },
-            function (err) {
+            function (err)
+            {
                 debugger;
                 return alert("There was an error uploading your file: ", err.message);
             }
