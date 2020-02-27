@@ -7,8 +7,10 @@
   <aura:registerEvent name="s3UploadComplete" type="c:s3UploadComplete"/>
   <aura:registerEvent name="s3UploadProgress" type="c:s3UploadProgress"/>
 
-  <aura:attribute name="progress" type="Integer" default="0" />
-  <aura:attribute name="fileNames" type="List" access="global"/>
+  <aura:attribute name="label" type="String" default="Attachment" access="global" description="Label of the file upload element"/>
+  <aura:attribute name="multiFiles" type="Boolean" default="true" access="global" description="Allow multiple files to be uploaded"/>
+  <aura:attribute name="progress" type="Integer" default="0" access="global" description="Progress of total file(s) uploaded"/>
+  <aura:attribute name="fileNames" type="List" access="global" description="Name of files about to be uploaded"/>
   <aura:attribute name="bucketName" type="String" access="global" description="AWS Bucket Name" />
   <aura:attribute name="bucketRegion" type="String" access="global" description="AWS Bucket Region" />
   <aura:attribute name="identityPoolId" type="String" access="global" description="AWS Identity Pool Id" />
@@ -19,8 +21,8 @@
   <lightning:input aura:id="fileSel"
                    name="file2"
                    type="file"
-                   multiple="true"
-                   label="Attachment"
+                   multiple="{!v.multiFiles}"
+                   label="{!v.label}"
                    onchange="{!c.handleFilesChange}"/>
   <aura:iteration items="{!v.fileNames}" var="fileName">
     {!fileName}
