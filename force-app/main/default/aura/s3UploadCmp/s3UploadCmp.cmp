@@ -1,57 +1,29 @@
-<aura:component
-  implements="force:appHostable,flexipage:availableForAllPageTypes"
-  access="global"
->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" access="global">
+
+  <aura:method name="startUpload" action="{!c.beginUpload}" description="Exposed method to start upload">
+    <aura:attribute name="keyPrefix" type="String" default=""/>
+  </aura:method>
+
+  <aura:registerEvent name="s3UploadComplete" type="c:s3UploadComplete"/>
+  <aura:registerEvent name="s3UploadProgress" type="c:s3UploadProgress"/>
+
   <aura:attribute name="progress" type="Integer" default="0" />
-  <aura:attribute
-    name="bucketName"
-    type="String"
-    access="global"
-    description="AWS Bucket Name"
-  />
-  <aura:attribute
-    name="bucketRegion"
-    type="String"
-    access="global"
-    description="AWS Bucket Region"
-  />
-  <aura:attribute
-    name="identityPoolId"
-    type="String"
-    access="global"
-    description="AWS Identity Pool Id"
-  />
-  <aura:attribute
-    name="s3FileUrls"
-    type="List"
-    access="global"
-    description="Url of file(s) uploaded"
-  />
+  <aura:attribute name="fileNames" type="List" access="global"/>
+  <aura:attribute name="bucketName" type="String" access="global" description="AWS Bucket Name" />
+  <aura:attribute name="bucketRegion" type="String" access="global" description="AWS Bucket Region" />
+  <aura:attribute name="identityPoolId" type="String" access="global" description="AWS Identity Pool Id" />
+  <aura:attribute name="s3FileUrls" type="List" access="global" description="Url of file(s) uploaded" />
 
-  <ltng:require
-    scripts="{!$Resource.awssdk}"
-    afterScriptsLoaded="{!c.scriptLoaded}"
-  />
+  <ltng:require scripts="{!$Resource.awssdk}" afterScriptsLoaded="{!c.scriptLoaded}" />
 
-  <lightning:input
-    aura:id="fileSel"
-    name="file2"
-    type="file"
-    multiple="true"
-    label="Attachment"
-    onchange="{!c.handleClick}"
-  />
+  <lightning:input aura:id="fileSel"
+                   name="file2"
+                   type="file"
+                   multiple="true"
+                   label="Attachment"
+                   onchange="{!c.handleFilesChange}"/>
+  <aura:iteration items="{!v.fileNames}" var="fileName">
+    {!fileName}
+  </aura:iteration>
 
-  <!-- <lightning:button
-    variant="brand"
-    label="Upload file"
-    title="Upload file"
-    onclick="{! c.handleClick }"
-  /> -->
-
-  <lightning:progressBar
-    value="{!v.progress}"
-    size="large"
-    variant="circular"
-  />
 </aura:component>

@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="To signal when all file(s) have been uploaded to S3">
+    <aura:attribute name="s3FileUrls" type="List"/>
+</aura:event>
